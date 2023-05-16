@@ -47,43 +47,45 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '401':
           description: You are not authorized to view the resource
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '403':
           description: Accessing the resource you were trying to reach is forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '404':
           description: The resource you were trying to reach is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '405':
           description: Method Not Allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '500':
           description: 'something went wrong! '
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
     post:
       tags:
         - User
@@ -94,7 +96,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserDTO'
         required: true
       responses:
         '201':
@@ -102,43 +104,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: '#/components/schemas/SuccessResponseDTO'
         '400':
           description: 'something went wrong! '
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '401':
           description: You are not authorized to view the resource
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '403':
           description: Accessing the resource you were trying to reach is forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '404':
           description: The resource you were trying to reach is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '405':
           description: Method Not Allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
   /user/{id}:
     get:
       tags:
@@ -151,44 +153,44 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "405":
           description: Method Not Allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "404":
           description: entity by id not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: '#/components/schemas/UserDTO'
     put:
       tags:
         - User
@@ -199,12 +201,12 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserDTO'
         required: true
       responses:
         "500":
@@ -212,37 +214,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "405":
           description: Validation exception
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "400":
           description: Invalid ID supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "404":
           description: Contact not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: '#/components/schemas/SuccessResponseDTO'
     delete:
       tags:
         - User
@@ -253,7 +255,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
             description: user id
       responses:
         "500":
@@ -261,87 +263,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "405":
           description: Validation exception
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "400":
           description: Invalid ID supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "404":
           description: Contact not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
-  /user/{userName}:
-    get:
-      tags:
-        - User
-      summary: Get a user by user name
-      operationId: getByUserName
-      parameters:
-        - in: path
-          name: userName
-          schema:
-            type: string
-          required: true
-          description: Alphabetic name of the user to get
-      responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "405":
-          description: Method Not Allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "404":
-          description: entity by userName not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: '#/components/schemas/SuccessResponseDTO'
   /user/age:
     get:
       tags:
@@ -365,47 +317,70 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '401':
           description: You are not authorized to view the resource
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '403':
           description: Accessing the resource you were trying to reach is forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '404':
           description: The resource you were trying to reach is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '405':
           description: Method Not Allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '500':
           description: 'something went wrong! '
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
 
 components:
   schemas:
-    User:
+    PetDTO:
+      type: object
+      required:
+        - pet_type
+      properties:
+        pet_type:
+          type: string
+      discriminator:
+        propertyName: pet_type
+    DogDTO:
+      allOf:
+        - $ref: "#/components/schemas/PetDTO"
+      properties:
+        name:
+          type: string
+    CatDTO:
+      allOf:
+        - $ref: "#/components/schemas/PetDTO"
+      properties:
+        breed:
+          type: string
+    UserDTO:
       type: object
       properties:
         name:
@@ -416,21 +391,26 @@ components:
           type: integer
         id:
           type: integer
-    ErrorResponse:
+
+    ErrorResponseDTO:
       type: object
       properties:
         code:
-          type: string
+          $ref: "#/components/schemas/ErrorCodesDTO"
         message:
           type: string
         description:
           type: string
         errors:
           type: object
-    SuccessResponse:
+    SuccessResponseDTO:
       type: object
       properties:
-        data:
-          type: object
         message:
           type: string
+    ErrorCodesDTO:
+      type: string
+      enum:
+        - BAD_REQUEST
+        - INVALID_CREDENTIALS
+        - LOGIN_ALREADY_TAKEN

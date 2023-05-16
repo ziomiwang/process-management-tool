@@ -30,6 +30,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,7 +74,6 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -94,14 +103,15 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openapi/yaml/automation-openapi.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
                             <apiPackage>${project.groupId}.processmanagementtool.api.v1</apiPackage>
                             <modelPackage>${project.groupId}.processmanagementtool.dto</modelPackage>
-                            <generateApiTests>false</generateApiTests>
+                            <generatorName>spring</generatorName>
+                            <generateApis>true</generateApis>
+                            <generateApiDocumentation>false</generateApiDocumentation>
                             <generateModelTests>false</generateModelTests>
-                            <modelNameSuffix>DTO</modelNameSuffix>
-                            <library>spring-boot</library>
-                            <skipValidateSpec>false</skipValidateSpec>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateSupportingFiles>true</generateSupportingFiles>
                             <configOptions>
                                 <identifierNamingConvention>original</identifierNamingConvention>
                                 <modelPropertyNaming>camelCase</modelPropertyNaming>
@@ -114,7 +124,8 @@
                                 <useTags>true</useTags>
                                 <library>spring-boot</library>
                                 <!--suppress UnresolvedMavenProperty -->
-                                <additionalModelTypeAnnotations>@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+                                <additionalModelTypeAnnotations>@lombok.experimental.SuperBuilder @lombok.NoArgsConstructor
+                                    @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
                             </configOptions>
                         </configuration>
                     </execution>
