@@ -1,97 +1,82 @@
 package com.example.processmanagementtool;
 
-import com.example.processmanagementtool.controller.TestController;
+import com.example.config.WebfluxConfigurationTest;
+import com.example.processmanagementtool.controller.UserController;
+import com.example.processmanagementtool.domain.user.User;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
-import com.example.processmanagementtool.dto.UserDTO;
-import com.example.processmanagementtool.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.processmanagementtool.dto.UserRequestDTO;
+import com.example.processmanagementtool.dto.UserResponseDTO;
+import com.example.processmanagementtool.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
-@ExtendWith(SpringExtension.class)
-@WebFluxTest(TestController.class)
+@WebFluxTest
+@Import(WebfluxConfigurationTest.class)
 class TestControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
 
-    @MockBean
-    private UserService userService;
-
     @Test
-    public void shouldSaveNewUser(){
-
-        UserDTO userToSave = UserDTO.builder()
-                .id(1)
-                .age(22)
-                .name("Michal")
+    public void shouldSaveNewUser() {
+        UserRequestDTO userToSave = UserRequestDTO.builder()
+                .login("test")
                 .password("passwd")
+                .name("Michal")
                 .build();
-
-        Mockito.when(userService.saveUser(any())).thenReturn(Mono.just(SuccessResponseDTO.builder().build()));
 
         webTestClient
                 .post()
                 .uri("/user")
-                .body(Mono.just(userToSave), UserDTO.class)
+                .body(Mono.just(userToSave), UserRequestDTO.class)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(SuccessResponseDTO.class)
+                .isEqualTo(SuccessResponseDTO.builder().message("saved user with login " + userToSave.getLogin()).build());
     }
 
     @Test
     public void shouldGetUsers() {
-
-        Mockito.when(userService.getALlUsers()).thenReturn(Flux.just(UserDTO.builder().build()));
 
         webTestClient
                 .get().uri("/user")
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(UserDTO.class);
+                .expectBodyList(UserResponseDTO.class);
     }
 
     @Test
-    public void shouldGetSingleUser(){
-
-        Mockito.when(userService.getOneUser(0)).thenReturn(Mono.just(UserDTO.builder().build()));
+    public void shouldGetSingleUser() {
 
         webTestClient.get().uri("/user/0")
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(UserDTO.class);
+                .expectBody(UserResponseDTO.class);
     }
 
     @Test
     void shouldUpdateUser() {
-        UserDTO updateData = UserDTO.builder()
-                .id(1)
-                .age(22)
+        UserRequestDTO updateData = UserRequestDTO.builder()
+                .login("test")
                 .name("Michal")
-                .password("passwd")
+                .password("test")
                 .build();
 
-        Mockito.when(userService.updateUser(eq(0), any()))
-                .thenReturn(Mono.just(SuccessResponseDTO.builder().build()));
-
         webTestClient.put().uri("/user/0")
-                .body(Mono.just(updateData), UserDTO.class)
+                .body(Mono.just(updateData), UserRequestDTO.class)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -101,7 +86,6 @@ class TestControllerTest {
 
     @Test
     void shouldDeleteUser() {
-        Mockito.when(userService.deleteUser(0)).thenReturn(Mono.just(SuccessResponseDTO.builder().build()));
 
         webTestClient.delete().uri("/user/0")
                 .exchange()

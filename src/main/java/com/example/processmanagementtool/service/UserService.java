@@ -1,8 +1,10 @@
 package com.example.processmanagementtool.service;
 
-import com.example.processmanagementtool.repository.UserRepository;
+import com.example.processmanagementtool.domain.user.User;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
-import com.example.processmanagementtool.dto.UserDTO;
+import com.example.processmanagementtool.dto.UserRequestDTO;
+import com.example.processmanagementtool.dto.UserResponseDTO;
+import com.example.processmanagementtool.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -14,47 +16,53 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Mono<SuccessResponseDTO> saveUser(Mono<UserDTO> userDTO) {
+    public Mono<SuccessResponseDTO> saveUser(Mono<UserRequestDTO> userDTO) {
         return userDTO.flatMap(this::valid)
-                .flatMap(userRepository::saveUser)
+                .flatMap(userRepository::save)
                 .map(ignore -> SuccessResponseDTO.builder()
-                        .message("user successfully saved")
+                        .message("saved user with login " + ignore.getLogin())
                         .build());
     }
 
-    public Mono<UserDTO> getOneUser(Integer id) {
-        return userRepository.getUser(id)
+    public Mono<UserResponseDTO> getOneUser(Long id) {
+        return userRepository.findById(id)
+                .map(UserDTOMapper::mapUserToResponse)
                 .switchIfEmpty(Mono.empty());
     }
 
-    public Flux<UserDTO> getALlUsers() {
-        return userRepository.getAllUser();
+    public Flux<UserResponseDTO> getALlUsers() {
+        return userRepository.findAll()
+                .map(UserDTOMapper::mapUserToResponse);
     }
 
-    public Flux<UserDTO> getAllUsersWithinAgeRange(Integer minAge, Integer maxAge) {
-        return userRepository.getAllUsersWithFilteredAge(minAge, maxAge);
-    }
-
-    public Mono<SuccessResponseDTO> deleteUser(Integer id) {
-        return userRepository.deleteUser(id)
+    public Mono<SuccessResponseDTO> deleteUser(Long id) {
+        return userRepository.deleteById(id)
                 .map(ignore -> SuccessResponseDTO.builder()
                         .message("user successfully deleted")
                         .build());
     }
 
-    public Mono<SuccessResponseDTO> updateUser(Integer id, Mono<UserDTO> userDTO){
-        return userDTO.flatMap(u ->userRepository.updateUser(id, u))
+    public Mono<SuccessResponseDTO> updateUser(Long id, Mono<UserRequestDTO> userDTO) {
+        return userDTO.flatMap(data -> userRepository.findById(id)
+                        .map(foundUser -> updateUserName(data, foundUser)))
                 .map(ignore -> SuccessResponseDTO.builder()
                         .message("user successfully updated")
                         .build());
     }
 
-    private Mono<UserDTO> valid(final UserDTO user) {
+    private Mono<User> updateUserName(UserRequestDTO editUserData, User foundUser) {
+        foundUser.setName(editUserData.getName());
+        return Mono.just(foundUser);
+    }
 
-        if (user.getName().isBlank()) {
+    private Mono<User> valid(final UserRequestDTO user) {
+
+        if (user.getLogin().isBlank()) {
             return Mono.error(new RuntimeException("???"));
         }
 
-        return Mono.just(user);
+        System.out.println("USER DATA: " + user);
+
+        return Mono.just(UserDTOMapper.mapRequestToUser(user));
     }
 }
