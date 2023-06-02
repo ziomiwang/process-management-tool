@@ -1,6 +1,7 @@
 package com.example.processmanagementtool.repository;
 
 import com.example.processmanagementtool.domain.user.User;
+import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

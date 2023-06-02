@@ -1,4 +1,4 @@
-package com.example.processmanagementtool.service;
+package com.example.processmanagementtool.user;
 
 import com.example.processmanagementtool.domain.user.User;
 import com.example.processmanagementtool.dto.UserRequestDTO;

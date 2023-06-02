@@ -297,69 +297,126 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponseDTO'
-#  /user/age:
-#    get:
-#      tags:
-#        - User
-#      parameters:
-#        - in: query
-#          name: minAge
-#          schema:
-#            type: integer
-#          description: minimum age of user to filter
-#        - in: query
-#          name: maxAge
-#          schema:
-#            type: integer
-#          description: maximum age of user to filter
-#      summary: Get list of User with age within range
-#      operationId: "getAllUserWithinAgeRange"
-#      responses:
-#        '200':
-#          description: return successfully
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/UserResponseDTO'
-#        '400':
-#          description: Bad Request
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-#        '401':
-#          description: You are not authorized to view the resource
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-#        '403':
-#          description: Accessing the resource you were trying to reach is forbidden
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-#        '404':
-#          description: The resource you were trying to reach is not found
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-#        '405':
-#          description: Method Not Allowed
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-#        '500':
-#          description: 'something went wrong! '
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorResponseDTO'
-
+  /team/{id}:
+    post:
+      tags:
+        - Team
+      summary: Create a new team with invited users.
+      description: Invites user(s) to existing team or creates a new one with invited users
+      operationId: inviteUsersAndCreateTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDTO'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /team/leave/{id}:
+    post:
+      tags:
+        - Team
+      summary: Leave or disband current team.
+      description: Allows user to leave or disband(in case of being an owner) current team
+      operationId: leaveCurrentTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDTO'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
 components:
   schemas:
     PetDTO:
@@ -400,6 +457,13 @@ components:
           format: int64
         name:
           type: string
+    TeamRequestDTO:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
 
     ErrorResponseDTO:
       type: object
@@ -417,6 +481,8 @@ components:
       properties:
         message:
           type: string
+        data:
+          type: object
     ErrorCodesDTO:
       type: string
       enum:

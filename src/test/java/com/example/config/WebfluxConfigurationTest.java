@@ -1,7 +1,7 @@
 package com.example.config;
 
-import com.example.processmanagementtool.repository.UserRepository;
-import com.example.processmanagementtool.service.UserService;
+import com.example.processmanagementtool.domain.user.repository.UserRepository;
+import com.example.processmanagementtool.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.context.annotation.Bean;

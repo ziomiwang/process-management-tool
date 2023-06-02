@@ -1,11 +1,13 @@
-package com.example.processmanagementtool.controller;
+package com.example.processmanagementtool.web;
 
 import com.example.processmanagementtool.api.v1.UserApi;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.dto.UserRequestDTO;
 import com.example.processmanagementtool.dto.UserResponseDTO;
-import com.example.processmanagementtool.service.UserService;
+import com.example.processmanagementtool.exception.UserNotFoundException;
+import com.example.processmanagementtool.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
@@ -27,7 +29,14 @@ public class UserController implements UserApi {
     @Override
     public Mono<ResponseEntity<SuccessResponseDTO>> deleteUser(Long id, ServerWebExchange exchange) {
         return userService.deleteUser(id)
-                .map(ResponseEntity::ok);
+//                .map(ResponseEntity::ok);
+                .map(user -> {
+                    if (user == null){
+                        throw new UserNotFoundException("User not found");
+                    }
+                    return new ResponseEntity<>(user, HttpStatus.OK);
+                });
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.processmanagementtool.domain.user;
+package com.example.processmanagementtool.domain.team;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -11,16 +11,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Builder
 @ToString
-@Table("_user")
-public class User {
+@Table("team")
+public class Team {
 
     @Id
     private Long id;
-    private String login;
-    private String password;
-    private String name;
-    private TeamMembershipType membershipType;
+    @Column("owner_user_id")
+    private Long ownerId;
 
-    @Column("team_id")
-    private Long teamId;
 }

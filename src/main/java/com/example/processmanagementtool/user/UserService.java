@@ -1,10 +1,11 @@
-package com.example.processmanagementtool.service;
+package com.example.processmanagementtool.user;
 
 import com.example.processmanagementtool.domain.user.User;
+import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.dto.UserRequestDTO;
 import com.example.processmanagementtool.dto.UserResponseDTO;
-import com.example.processmanagementtool.repository.UserRepository;
+import com.example.processmanagementtool.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -43,11 +44,18 @@ public class UserService {
     }
 
     public Mono<SuccessResponseDTO> updateUser(Long id, Mono<UserRequestDTO> userDTO) {
-        return userDTO.flatMap(data -> userRepository.findById(id)
-                        .map(foundUser -> updateUserName(data, foundUser)))
-                .map(ignore -> SuccessResponseDTO.builder()
-                        .message("user successfully updated")
-                        .build());
+//        return userDTO.flatMap(data -> userRepository.findById(id)
+//                        .map(foundUser -> updateUserName(data, foundUser)))
+//                .map(ignore -> SuccessResponseDTO.builder()
+//                        .message("user successfully updated")
+//                        .build());
+        return mapUserToResponse(id)
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
+    }
+
+    private Mono<SuccessResponseDTO> mapUserToResponse(Long id){
+        return userRepository.findById(id)
+                .flatMap(ignored -> Mono.just(SuccessResponseDTO.builder().build()));
     }
 
     private Mono<User> updateUserName(UserRequestDTO editUserData, User foundUser) {
