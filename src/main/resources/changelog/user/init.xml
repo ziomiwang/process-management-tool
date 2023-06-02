@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <changeSet id="20230516" author="ziomiwan">
+        <createTable tableName="_user">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="user_id_pk"/>
+            </column>
+            <column name="team_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="login" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="password" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="membership_type" type="varchar(250)"/>
+        </createTable>
+
+        <createTable tableName="team">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="team_id_pk"/>
+            </column>
+            <column name="owner_user_id" type="bigint">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="_user" baseColumnNames="team_id" constraintName="fk_user_team_id" referencedTableName="team"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="_user" indexName="team_user_id_fk">
+            <column name="team_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="team" baseColumnNames="owner_user_id" constraintName="fk_owner_user_id"
+                                 referencedTableName="_user" referencedColumnNames="id" onDelete="CASCADE"/>
+        <createIndex tableName="team" indexName="team_owner_user_id">
+            <column name="owner_user_id"/>
+        </createIndex>
+
+        <createSequence sequenceName="hibernate_sequence" incrementBy="1" startValue="1"/>
+        <addAutoIncrement tableName="_user" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+        <addAutoIncrement tableName="team" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>

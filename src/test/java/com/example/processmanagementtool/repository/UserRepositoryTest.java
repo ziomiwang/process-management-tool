@@ -1,58 +1,88 @@
 package com.example.processmanagementtool.repository;
 
-import com.example.processmanagementtool.dto.UserDTO;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.processmanagementtool.domain.user.User;
+import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@DataR2dbcTest
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles({"test"})
 class UserRepositoryTest {
 
-    private final UserRepository userRepository = new UserRepository();
-
-    private final UserDTO testUser = UserDTO.builder()
-            .id(1)
-            .age(22)
-            .name("Michal")
-            .password("passwd")
-            .build();
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
-    void saveUser() {
-        Mono<UserDTO> savedUser = userRepository.saveUser(testUser);
+    void shouldSaveSingleUserToDatabase() {
+        User user = User.builder()
+                .login("test1234678")
+                .password("test")
+                .name("testName")
+                .build();
+
+        Mono<User> savedUser = userRepository.save(user);
+
+        StepVerifier
+                .create(savedUser)
+                .expectNextMatches(usr -> usr.getLogin().equals(user.getLogin()))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSaveAndRetrieveUser(){
+        User user = User.builder()
+                .login("test12345")
+                .password("test")
+                .name("testName")
+                .build();
+
+        Mono<User> savedUser = userRepository.save(user);
+        Mono<User> userFromDb = userRepository.findUserByLogin(user.getLogin());
 
         StepVerifier
                 .create(savedUser)
                 .expectNextCount(1)
                 .verifyComplete();
-    }
-
-    @Test
-    void getUser() {
-        Mono<UserDTO> userFromDb = userRepository.getUser(1);
         StepVerifier
                 .create(userFromDb)
-                .consumeNextWith(userDb -> assertEquals(userDb.getName(), testUser.getName()))
+                .expectNextMatches(retrievedUser -> retrievedUser.getLogin().equals(user.getLogin()))
                 .verifyComplete();
     }
 
-    @BeforeEach
-    void initDB() {
-        userRepository.saveUser(testUser)
-                .block();
-    }
-
     @Test
-    void getAllUser() {
-    }
+    void shouldDeleteUser(){
+        User user = User.builder()
+                .login("test12345")
+                .password("test")
+                .name("testName")
+                .build();
 
-    @Test
-    void deleteUser() {
-    }
+        Mono<User> savedUser = userRepository.save(user);
+        Mono<User> userFromDb = userRepository.findUserByLogin(user.getLogin());
+        Mono<Void> voidMono = userRepository.deleteUserByLogin(user.getLogin());
+        Mono<User> deletedUser = userRepository.findUserByLogin(user.getLogin());
 
-    @Test
-    void updateUser() {
+        StepVerifier
+                .create(savedUser)
+                .expectNextCount(1)
+                .verifyComplete();
+        StepVerifier
+                .create(userFromDb)
+                .expectNextMatches(retrievedUser -> retrievedUser.getLogin().equals(user.getLogin()))
+                .verifyComplete();
+        StepVerifier
+                .create(voidMono)
+                .verifyComplete();
+        StepVerifier
+                .create(deletedUser)
+                .verifyComplete();
+
     }
 }
