@@ -13,7 +13,17 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Builder
 public class CustomErrorResponse {
-    private String traceId;
     private OffsetDateTime timestamp;
     private HttpStatus status;
+    private String message;
+    private String errorCode;
+
+    public static CustomErrorResponse map(ServerException ex){
+        return CustomErrorResponse.builder()
+                .timestamp(OffsetDateTime.now())
+                .message(ex.getMessage())
+                .errorCode(ex.getErrorCode().toString())
+                .status(ex.getHttpStatus())
+                .build();
+    }
 }
