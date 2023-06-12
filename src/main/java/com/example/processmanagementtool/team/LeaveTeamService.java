@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,8 +22,8 @@ public class LeaveTeamService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public Mono<SuccessResponseDTO> leaveCurrentTeam(Long id) {
-        return userRepository.findById(id)
+    public Mono<SuccessResponseDTO> leaveCurrentTeam(Principal principal) {
+        return userRepository.findUserByLogin(principal.getName())
                 .flatMap(this::handleRequestByMembership)
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }

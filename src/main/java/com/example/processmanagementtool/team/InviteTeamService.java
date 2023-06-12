@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,13 +25,13 @@ public class InviteTeamService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public Mono<SuccessResponseDTO> findUsersAndSetToTeam(Long id, Mono<TeamRequestDTO> requestData) {
-        return requestData.flatMap(data -> processRequest(id, data))
+    public Mono<SuccessResponseDTO> findUsersAndSetToTeam(Principal principal, Mono<TeamRequestDTO> requestData) {
+        return requestData.flatMap(data -> processRequest(principal.getName(), data))
                 .flatMap(this::invitationsResponse);
     }
 
-    private Mono<List<User>> processRequest(Long id, TeamRequestDTO request) {
-        return userRepository.findById(id)
+    private Mono<List<User>> processRequest(String currentUser, TeamRequestDTO request) {
+        return userRepository.findUserByLogin(currentUser)
                 .flatMap(foundSender -> checkIfRequestContainsOwner(new HashSet<>(request.getUserIds()), foundSender)
                         .flatMap(validated -> findOwnerUserAndInvite(foundSender, validated))
                         .switchIfEmpty(Mono.error(new BadRequest("User not found"))));
