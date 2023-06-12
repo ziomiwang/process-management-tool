@@ -4,7 +4,7 @@ import com.example.processmanagementtool.api.v1.UserApi;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.dto.UserRequestDTO;
 import com.example.processmanagementtool.dto.UserResponseDTO;
-import com.example.processmanagementtool.exception.UserNotFoundException;
+import com.example.processmanagementtool.exception.customexceptions.UserNotFoundException;
 import com.example.processmanagementtool.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,6 @@ import reactor.core.publisher.Mono;
 public class UserController implements UserApi {
 
     private final UserService userService;
-
-    @Override
-    public Mono<ResponseEntity<SuccessResponseDTO>> createUser(Mono<UserRequestDTO> userDTO, ServerWebExchange exchange) {
-        return userService.saveUser(userDTO)
-                .map(ResponseEntity::ok);
-    }
 
     @Override
     public Mono<ResponseEntity<SuccessResponseDTO>> deleteUser(Long id, ServerWebExchange exchange) {

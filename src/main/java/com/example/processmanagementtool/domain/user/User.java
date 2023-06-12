@@ -19,6 +19,7 @@ public class User {
     private String login;
     private String password;
     private String name;
+    private Role role;
     private TeamMembershipType membershipType;
 
     @Column("team_id")

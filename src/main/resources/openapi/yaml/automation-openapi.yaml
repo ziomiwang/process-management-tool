@@ -35,6 +35,117 @@ tags:
       url: http://swagger.io
 
 paths:
+  /auth/register:
+    post:
+      tags:
+        - Security
+      summary: Register user
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /auth/login:
+    post:
+      tags:
+        - Security
+      summary: login user
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+        required: true
+      responses:
+        '201':
+          description: Authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+
   /user:
     get:
       tags:
@@ -86,61 +197,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
-    post:
-      tags:
-        - User
-      summary: Create a new user.
-      description: Create new user in service
-      operationId: createUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRequestDTO'
-        required: true
-      responses:
-        '201':
-          description: Created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponseDTO'
-        '400':
-          description: 'something went wrong! '
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-        '401':
-          description: You are not authorized to view the resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-        '403':
-          description: Accessing the resource you were trying to reach is forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-        '404':
-          description: The resource you were trying to reach is not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-        '405':
-          description: Method Not Allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
+
   /user/{id}:
     get:
       tags:
@@ -419,26 +476,17 @@ paths:
                 $ref: '#/components/schemas/ErrorResponseDTO'
 components:
   schemas:
-    PetDTO:
+    AuthResponse:
       type: object
-      required:
-        - pet_type
       properties:
-        pet_type:
+        token:
           type: string
-      discriminator:
-        propertyName: pet_type
-    DogDTO:
-      allOf:
-        - $ref: "#/components/schemas/PetDTO"
+    AuthRequest:
+      type: object
       properties:
-        name:
+        login:
           type: string
-    CatDTO:
-      allOf:
-        - $ref: "#/components/schemas/PetDTO"
-      properties:
-        breed:
+        password:
           type: string
     UserRequestDTO:
       type: object

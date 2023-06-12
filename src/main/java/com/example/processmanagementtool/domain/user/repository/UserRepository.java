@@ -7,12 +7,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends ReactiveCrudRepository<User, Long> {
 
     Mono<User> findUserByLogin(String login);
     Mono<Void> deleteUserByLogin(String login);
-    Flux<User> findAllByLoginIn(List<String> login);
+    Flux<User> findAllByLoginIn(Set<String> login);
     Flux<User> findAllByTeamId(Long teamId);
+    Mono<Boolean> existsUserByLogin(String login);
 }
