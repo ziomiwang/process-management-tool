@@ -19,14 +19,16 @@ public class TeamController implements TeamApi {
     private final LeaveTeamService leaveTeamService;
 
     @Override
-    public Mono<ResponseEntity<SuccessResponseDTO>> inviteUsersAndCreateTeam(Long id, Mono<TeamRequestDTO> teamRequestDTO, ServerWebExchange exchange) {
-        return inviteTeamService.findUsersAndSetToTeam(id, teamRequestDTO)
-                .map(ResponseEntity::ok);
+    public Mono<ResponseEntity<SuccessResponseDTO>> inviteUsersAndCreateTeam(Mono<TeamRequestDTO> teamRequestDTO, ServerWebExchange exchange) {
+        return exchange.getPrincipal()
+                .flatMap(principal -> inviteTeamService.inviteUsersToTeam(principal, teamRequestDTO)
+                        .map(ResponseEntity::ok));
     }
 
     @Override
-    public Mono<ResponseEntity<SuccessResponseDTO>> leaveCurrentTeam(Long id, ServerWebExchange exchange) {
-        return leaveTeamService.leaveCurrentTeam(id)
-                .map(ResponseEntity::ok);
+    public Mono<ResponseEntity<SuccessResponseDTO>> leaveCurrentTeam(ServerWebExchange exchange) {
+        return exchange.getPrincipal()
+                .flatMap(principal -> leaveTeamService.leaveCurrentTeam(principal)
+                        .map(ResponseEntity::ok));
     }
 }

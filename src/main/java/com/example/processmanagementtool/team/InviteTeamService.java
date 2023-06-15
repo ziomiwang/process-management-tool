@@ -8,11 +8,14 @@ import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.dto.TeamRequestDTO;
 import com.example.processmanagementtool.exception.customexceptions.BadRequest;
+import com.example.processmanagementtool.exception.customexceptions.UserNotFoundException;
+import com.example.processmanagementtool.user.UserDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,16 +27,16 @@ public class InviteTeamService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public Mono<SuccessResponseDTO> findUsersAndSetToTeam(Long id, Mono<TeamRequestDTO> requestData) {
-        return requestData.flatMap(data -> processRequest(id, data))
+    public Mono<SuccessResponseDTO> inviteUsersToTeam(Principal principal, Mono<TeamRequestDTO> requestData) {
+        return requestData.flatMap(data -> processRequest(principal.getName(), data))
                 .flatMap(this::invitationsResponse);
     }
 
-    private Mono<List<User>> processRequest(Long id, TeamRequestDTO request) {
-        return userRepository.findById(id)
+    private Mono<List<User>> processRequest(String currentUser, TeamRequestDTO request) {
+        return userRepository.findUserByLogin(currentUser)
                 .flatMap(foundSender -> checkIfRequestContainsOwner(new HashSet<>(request.getUserIds()), foundSender)
                         .flatMap(validated -> findOwnerUserAndInvite(foundSender, validated))
-                        .switchIfEmpty(Mono.error(new BadRequest("User not found"))));
+                        .switchIfEmpty(Mono.error(new UserNotFoundException())));
     }
 
     private Mono<Set<String>> checkIfRequestContainsOwner(Set<String> request, User sender) {
@@ -80,7 +83,7 @@ public class InviteTeamService {
     private Mono<SuccessResponseDTO> invitationsResponse(List<User> output) {
         return Mono.just(SuccessResponseDTO.builder()
                 .message("Successfully sent " + output.size() + " invitations to team")
-                .data(output)
+                .data(UserDTOMapper.mapUserToSimpleUser(output))
                 .build());
     }
 }

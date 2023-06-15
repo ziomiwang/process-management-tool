@@ -1,10 +1,10 @@
-package com.example.processmanagementtool.service;
+package com.example.processmanagementtool.test;
 
 import com.example.processmanagementtool.domain.user.User;
+import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.dto.UserRequestDTO;
 import com.example.processmanagementtool.dto.UserResponseDTO;
-import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 class UserServiceTest {
 
-    @InjectMocks
-    private UserService userService;
 
     @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
 
     private final User testUser = User.builder()
             .login("test")
@@ -39,18 +40,6 @@ class UserServiceTest {
             .password("test")
             .name("test")
             .build();
-
-
-//    @Test
-//    void shouldSaveUser() {
-//        Mockito.when(userRepository.save(testUser)).thenReturn(Mono.just(testUser));
-//        Mono<SuccessResponseDTO> saveOperationResponse = userService.saveUser(Mono.just(testRequest));
-//
-//        StepVerifier
-//                .create(saveOperationResponse)
-//                .consumeNextWith(res -> assertEquals(res.getMessage(), "user successfully saved"))
-//                .verifyComplete();
-//    }
 
     @Test
     void shouldGetOneUser() {

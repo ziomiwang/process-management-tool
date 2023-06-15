@@ -37,9 +37,6 @@ public class WebSecurityConfig {
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 .pathMatchers("/auth/**").permitAll()
-//                .pathMatchers("/user/password-reset/**").permitAll()
-//                .pathMatchers("/payments/**").permitAll()
-//                .pathMatchers("/v3/**").permitAll()
                 .anyExchange().authenticated()
                 .and().build();
     }

@@ -354,20 +354,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponseDTO'
-  /team/{id}:
+  /team:
     post:
       tags:
         - Team
       summary: Create a new team with invited users.
       description: Invites user(s) to existing team or creates a new one with invited users
       operationId: inviteUsersAndCreateTeam
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
       requestBody:
         content:
           application/json:
@@ -417,20 +410,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
-  /team/leave/{id}:
+  /team/leave:
     post:
       tags:
         - Team
       summary: Leave or disband current team.
       description: Allows user to leave or disband(in case of being an owner) current team
       operationId: leaveCurrentTeam
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
       responses:
         '201':
           description: Created successfully

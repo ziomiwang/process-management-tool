@@ -7,10 +7,12 @@ import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.exception.customexceptions.BadRequest;
 import com.example.processmanagementtool.exception.customexceptions.UserNotFoundException;
+import com.example.processmanagementtool.user.UserDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,10 +23,10 @@ public class LeaveTeamService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public Mono<SuccessResponseDTO> leaveCurrentTeam(Long id) {
-        return userRepository.findById(id)
+    public Mono<SuccessResponseDTO> leaveCurrentTeam(Principal principal) {
+        return userRepository.findUserByLogin(principal.getName())
                 .flatMap(this::handleRequestByMembership)
-                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
+                .switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
 
     private Mono<SuccessResponseDTO> handleRequestByMembership(User user) {
@@ -35,7 +37,7 @@ public class LeaveTeamService {
             return detachMembersFromOwnerTeamAndDeleteTeam(user.getTeamId())
                     .flatMap(res -> Mono.just(SuccessResponseDTO.builder()
                             .message("Team successfully disbanded")
-                            .data(res)
+                            .data(UserDTOMapper.mapUserToSimpleUser(res))
                             .build()));
         }
         return setUserTeamInfoToNull(user)
