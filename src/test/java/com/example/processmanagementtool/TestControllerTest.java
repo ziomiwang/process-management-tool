@@ -86,23 +86,4 @@ class TestControllerTest {
                 .isOk()
                 .expectBody(SuccessResponseDTO.class);
     }
-
-//    @BeforeEach
-//    void init(){
-//        UserDTO userToSave = UserDTO.builder()
-//                .id(1)
-//                .age(22)
-//                .name("Michal")
-//                .password("passwd")
-//                .build();
-//
-//        Mockito.when(userService.saveUser(any())).thenReturn(Mono.just(SuccessResponseDTO.builder().build()));
-//
-//        webTestClient
-//                .post()
-//                .uri("/user")
-//                .body(Mono.just(userToSave), UserDTO.class)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .exchange();
-//    }
 }

@@ -21,7 +21,7 @@ public class TeamController implements TeamApi {
     @Override
     public Mono<ResponseEntity<SuccessResponseDTO>> inviteUsersAndCreateTeam(Mono<TeamRequestDTO> teamRequestDTO, ServerWebExchange exchange) {
         return exchange.getPrincipal()
-                .flatMap(principal -> inviteTeamService.findUsersAndSetToTeam(principal, teamRequestDTO)
+                .flatMap(principal -> inviteTeamService.inviteUsersToTeam(principal, teamRequestDTO)
                         .map(ResponseEntity::ok));
     }
 
