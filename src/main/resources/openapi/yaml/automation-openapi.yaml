@@ -460,6 +460,164 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
+  /template:
+    post:
+      tags:
+        - template
+      summary: Create a new template from selected fields.
+      description: Creates a new prospect template from selected fields
+      operationId: createTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDTO'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    get:
+      tags:
+        - Template
+      summary: get all templates associated with user.
+      description: Returns a list of records
+      operationId: getUserTemplates
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "405":
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "404":
+          description: entity by id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemplateResponseDTO'
+  /prospect:
+    post:
+      tags:
+        - Prospect
+      summary: Create a new prospect.
+      description: Creates a new Prospect from selected template and given values
+      operationId: createNewProspect
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDTO'
+        '400':
+          description: 'something went wrong! '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '401':
+          description: You are not authorized to view the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '403':
+          description: Accessing the resource you were trying to reach is forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: The resource you were trying to reach is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+
 components:
   schemas:
     AuthResponse:
@@ -498,6 +656,50 @@ components:
           type: array
           items:
             type: string
+    TemplateRequestDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/TemplatePropertyDTO'
+    TemplateResponseDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/TemplatePropertyDTO'
+    TemplatePropertyDTO:
+      type: object
+      properties:
+        required:
+          type: boolean
+        data:
+          type: object
+    ProspectRequestDTO:
+      type: object
+      properties:
+        templateId:
+          type: integer
+          format: int64
+        templateName:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ProspectPropertyDTO'
+    ProspectPropertyDTO:
+      type: object
+      properties:
+        required:
+          type: boolean
+        data:
+          type: object
 
     ErrorResponseDTO:
       type: object

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <changeSet id="20230615" author="ziomiwan">
+        <createTable tableName="prospect">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="prospect_id_pk"/>
+            </column>
+            <column name="template_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fields" type="json">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_name" type="varchar(250)"/>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="prospect" baseColumnNames="template_id" constraintName="fk_prospect_template_id" referencedTableName="template"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="prospect" indexName="prospect_template_id_fk">
+            <column name="template_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="prospect" baseColumnNames="user_id" constraintName="fk_template_user_id" referencedTableName="_user"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="prospect" indexName="prospect_user_id_fk">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createSequence sequenceName="hibernate_sequence" incrementBy="1" startValue="1"/>
+        <addAutoIncrement tableName="prospect" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>
