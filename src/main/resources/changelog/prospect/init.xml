@@ -26,13 +26,12 @@
             <column name="template_id"/>
         </createIndex>
 
-        <addForeignKeyConstraint baseTableName="prospect" baseColumnNames="user_id" constraintName="fk_template_user_id" referencedTableName="_user"
+        <addForeignKeyConstraint baseTableName="prospect" baseColumnNames="user_id" constraintName="fk_prospect_user_id" referencedTableName="_user"
                                  referencedColumnNames="id"/>
         <createIndex tableName="prospect" indexName="prospect_user_id_fk">
             <column name="user_id"/>
         </createIndex>
 
-        <createSequence sequenceName="hibernate_sequence" incrementBy="1" startValue="1"/>
         <addAutoIncrement tableName="prospect" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
     </changeSet>
 </databaseChangeLog>

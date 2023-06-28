@@ -696,8 +696,6 @@ components:
     ProspectPropertyDTO:
       type: object
       properties:
-        required:
-          type: boolean
         data:
           type: object
 

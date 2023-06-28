@@ -20,7 +20,6 @@ public class ProspectDTOMapper {
 
     public static ProspectProperty mapProspectPropertyDTOtoProspectProperty(ProspectPropertyDTO prospectPropertyDTO){
         return ProspectProperty.builder()
-                .required(prospectPropertyDTO.getRequired())
                 .data(prospectPropertyDTO.getData())
                 .build();
     }
