@@ -522,6 +522,17 @@ paths:
       summary: get all templates associated with user.
       description: Returns a list of records
       operationId: getUserTemplates
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The page of templates to display
+        - in: query
+          name: size
+          schema:
+            type: integer
+          description: The number of elements to display on single page
       responses:
         "500":
           description: Internal Server Error
@@ -558,9 +569,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TemplateResponseDTO'
+                $ref: '#/components/schemas/TemplatePageDTO'
   /prospect:
     post:
       tags:
@@ -617,6 +626,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
+    get:
+      tags:
+        - Prospect
+      summary: get all prospects associated with user.
+      description: Returns a list of records
+      operationId: getUserProspects
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The page of prospects to display
+        - in: query
+          name: size
+          schema:
+            type: integer
+          description: The number of elements to display on single page
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "405":
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "404":
+          description: entity by id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectPageDTO'
 
 components:
   schemas:
@@ -693,6 +756,16 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/ProspectPropertyDTO'
+    ProspectResponseDTO:
+      type: object
+      properties:
+        templateId:
+          type: integer
+          format: int64
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ProspectPropertyDTO'
     ProspectPropertyDTO:
       type: object
       properties:
@@ -717,6 +790,43 @@ components:
           type: string
         data:
           type: object
+    PageDTO:
+      type: object
+      required:
+        - responseType
+      properties:
+        responseType:
+          type: string
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        pageElements:
+          type: integer
+      discriminator:
+        propertyName: responseType
+
+    TemplatePageDTO:
+      allOf:
+        - $ref: "#/components/schemas/PageDTO"
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: "#/components/schemas/TemplateResponseDTO"
+
+    ProspectPageDTO:
+      allOf:
+        - $ref: "#/components/schemas/PageDTO"
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProspectResponseDTO"
+
     ErrorCodesDTO:
       type: string
       enum:

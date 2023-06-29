@@ -4,7 +4,9 @@ import com.example.processmanagementtool.domain.prospect.Prospect;
 import com.example.processmanagementtool.domain.prospect.ProspectProperty;
 import com.example.processmanagementtool.dto.ProspectPropertyDTO;
 import com.example.processmanagementtool.dto.ProspectRequestDTO;
+import com.example.processmanagementtool.dto.ProspectResponseDTO;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,19 @@ public class ProspectDTOMapper {
         return ProspectProperty.builder()
                 .data(prospectPropertyDTO.getData())
                 .build();
+    }
+
+    public static ProspectResponseDTO mapProspectToResponse(Prospect prospect) {
+        return ProspectResponseDTO.builder()
+                .templateId(prospect.getTemplateId())
+                .fields(mapFieldsToFieldsDto(prospect.getFields()))
+                .build();
+    }
+
+    public static List<ProspectResponseDTO> mapProspectToResponse(List<Prospect> prospects) {
+        return prospects.stream()
+                .map(ProspectDTOMapper::mapProspectToResponse)
+                .collect(Collectors.toList());
     }
 
     private static Map<String, ProspectPropertyDTO> mapFieldsToFieldsDto(Map<String, ProspectProperty> fields) {

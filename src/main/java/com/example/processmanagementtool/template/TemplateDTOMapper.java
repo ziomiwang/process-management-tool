@@ -6,10 +6,17 @@ import com.example.processmanagementtool.dto.TemplatePropertyDTO;
 import com.example.processmanagementtool.dto.TemplateRequestDTO;
 import com.example.processmanagementtool.dto.TemplateResponseDTO;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TemplateDTOMapper {
+
+    public static List<TemplateResponseDTO> mapTemplateToTemplateResponseDTO(List<Template> templates) {
+        return templates.stream()
+                .map(TemplateDTOMapper::mapTemplateToTemplateResponseDTO)
+                .collect(Collectors.toList());
+    }
 
     public static TemplateResponseDTO mapTemplateToTemplateResponseDTO(Template template) {
         return TemplateResponseDTO.builder()

@@ -2,14 +2,14 @@ package com.example.processmanagementtool.web;
 
 import com.example.processmanagementtool.api.v1.TemplateApi;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
+import com.example.processmanagementtool.dto.TemplatePageDTO;
 import com.example.processmanagementtool.dto.TemplateRequestDTO;
-import com.example.processmanagementtool.dto.TemplateResponseDTO;
 import com.example.processmanagementtool.template.TemplateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -26,9 +26,10 @@ public class TemplateController implements TemplateApi {
     }
 
     @Override
-    public Mono<ResponseEntity<Flux<TemplateResponseDTO>>> getUserTemplates(ServerWebExchange exchange) {
+    public Mono<ResponseEntity<TemplatePageDTO>> getUserTemplates(Integer page, Integer size, ServerWebExchange exchange) {
+        PageRequest pageRequest = PageRequest.of(page, size);
         return exchange.getPrincipal()
-                .map(templateService::findAllTemplatesByUser)
+                .flatMap(principal -> templateService.findAllTemplatesByUser(principal, pageRequest))
                 .map(ResponseEntity::ok);
     }
 }
