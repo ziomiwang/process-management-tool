@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class ProspectDTOMapper {
 
-    public static Prospect mapDTOtoProspect(ProspectRequestDTO prospectRequestDTO){
+    public static Prospect mapDTOtoProspect(ProspectRequestDTO prospectRequestDTO) {
         return Prospect.builder()
                 .templateId(prospectRequestDTO.getTemplateId())
                 .templateName(prospectRequestDTO.getTemplateName())
@@ -20,7 +20,7 @@ public class ProspectDTOMapper {
                 .build();
     }
 
-    public static ProspectProperty mapProspectPropertyDTOtoProspectProperty(ProspectPropertyDTO prospectPropertyDTO){
+    public static ProspectProperty mapProspectPropertyDTOtoProspectProperty(ProspectPropertyDTO prospectPropertyDTO) {
         return ProspectProperty.builder()
                 .data(prospectPropertyDTO.getData())
                 .build();

@@ -36,11 +36,6 @@ public class UserService {
     }
 
     public Mono<SuccessResponseDTO> updateUser(Long id, Mono<UserRequestDTO> userDTO) {
-//        return userDTO.flatMap(data -> userRepository.findById(id)
-//                        .map(foundUser -> updateUserName(data, foundUser)))
-//                .map(ignore -> SuccessResponseDTO.builder()
-//                        .message("user successfully updated")
-//                        .build());
         return mapUserToResponse(id)
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }

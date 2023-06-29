@@ -1,5 +1,6 @@
 package com.example.processmanagementtool.team;
 
+import com.example.processmanagementtool.commons.ResponseHelper;
 import com.example.processmanagementtool.domain.team.Team;
 import com.example.processmanagementtool.domain.team.repository.TeamRepository;
 import com.example.processmanagementtool.domain.user.TeamMembershipType;
@@ -81,9 +82,7 @@ public class InviteTeamService {
     }
 
     private Mono<SuccessResponseDTO> invitationsResponse(List<User> output) {
-        return Mono.just(SuccessResponseDTO.builder()
-                .message("Successfully sent " + output.size() + " invitations to team")
-                .data(UserDTOMapper.mapUserToSimpleUser(output))
-                .build());
+        return ResponseHelper.buildSuccessResponse("Successfully sent " + output.size() + " invitations to team",
+                UserDTOMapper.mapUserToSimpleUser(output));
     }
 }

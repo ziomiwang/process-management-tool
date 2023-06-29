@@ -16,4 +16,6 @@ public interface TemplateRepository extends ReactiveSortingRepository<Template, 
     Flux<Template> findAllByUserId(Long userId, Pageable pageable);
 
     Mono<Template> findTemplateByUserIdAndId(Long userId, Long id);
+
+    Mono<Long> countByUserId(Long userId);
 }

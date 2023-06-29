@@ -30,7 +30,7 @@ public class BadRequest extends ServerException {
         super(message, errorCode, httpStatus);
     }
 
-    public BadRequest(String message, ErrorCode errorCode, HttpStatus httpStatus){
+    public BadRequest(String message, ErrorCode errorCode, HttpStatus httpStatus) {
         super(message, errorCode, httpStatus);
     }
 

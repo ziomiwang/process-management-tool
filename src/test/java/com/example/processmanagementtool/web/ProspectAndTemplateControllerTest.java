@@ -6,7 +6,6 @@ import com.example.processmanagementtool.exception.customexceptions.BadRequest;
 import com.example.processmanagementtool.prospect.ProspectService;
 import com.example.processmanagementtool.template.TemplateService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,14 +31,12 @@ class ProspectAndTemplateControllerTest {
     private WebTestClient webTestClient;
 
     @Mock
-    private Principal principal;
+    private Principal principalMock;
 
     @Autowired
-    @InjectMocks
     private ProspectService prospectService;
 
     @Autowired
-    @InjectMocks
     private TemplateService templateService;
 
     @BeforeEach
@@ -62,7 +59,6 @@ class ProspectAndTemplateControllerTest {
     @Test
     @WithMockUser
     void shouldCreateNewTemplateAndProspect() {
-
         TemplateRequestDTO templateRequestDTO = TemplateRequestDTO.builder()
                 .name("test template")
                 .fields(Map.of("name", TemplatePropertyDTO.builder()

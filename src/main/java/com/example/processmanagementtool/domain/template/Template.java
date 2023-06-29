@@ -19,7 +19,6 @@ public class Template {
     @Id
     private Long id;
     private String name;
-
     private Map<String, TemplateProperty> fields;
 
     @Column("user_id")

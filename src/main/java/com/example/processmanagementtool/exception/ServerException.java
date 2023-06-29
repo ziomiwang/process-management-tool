@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public abstract class ServerException extends RuntimeException{
+public abstract class ServerException extends RuntimeException {
 
     private String message;
     private ErrorCode errorCode;

@@ -1,5 +1,6 @@
 package com.example.processmanagementtool.template;
 
+import com.example.processmanagementtool.commons.ResponseHelper;
 import com.example.processmanagementtool.domain.template.Template;
 import com.example.processmanagementtool.domain.template.repository.TemplateRepository;
 import com.example.processmanagementtool.domain.user.repository.UserRepository;
@@ -32,9 +33,8 @@ public class TemplateService {
 
     public Mono<TemplatePageDTO> findAllTemplatesByUser(Principal principal, PageRequest pageRequest) {
         return userRepository.findUserByLogin(principal.getName())
-                .flatMap(foundUser -> getMapAndZipTemplates(foundUser.getId(), pageRequest))
-                .map(res -> new PageImpl<>(res.getT1(), pageRequest, res.getT2()))
-                .flatMap(this::mapTemplatePageToTemplatePageDTO);
+                .flatMap(foundUser -> getAndZipTemplates(foundUser.getId(), pageRequest))
+                .flatMap(tuple2 -> mapTemplatePageToTemplatePageDTO(new PageImpl<>(tuple2.getT1(), pageRequest, tuple2.getT2())));
     }
 
     private Mono<TemplatePageDTO> mapTemplatePageToTemplatePageDTO(Page<Template> page) {
@@ -47,17 +47,15 @@ public class TemplateService {
                 .build());
     }
 
-    private Mono<Tuple2<List<Template>, Long>> getMapAndZipTemplates(Long userId, PageRequest pageRequest) {
+    private Mono<Tuple2<List<Template>, Long>> getAndZipTemplates(Long userId, PageRequest pageRequest) {
         return templateRepository.findAllByUserId(userId, pageRequest).collectList()
-                .zipWith(templateRepository.findAllByUserId(userId).count());
+                .zipWith(templateRepository.countByUserId(userId));
     }
 
     private Mono<SuccessResponseDTO> mapRequestToTemplateAndSave(TemplateRequestDTO data, Long userId) {
         Template template = TemplateDTOMapper.mapTemplateRequestDTOToTemplate(data);
         template.setUserId(userId);
         return templateRepository.save(template)
-                .flatMap(savedTemplate -> Mono.just(SuccessResponseDTO.builder()
-                        .message("success")
-                        .build()));
+                .flatMap(savedTemplate -> ResponseHelper.buildSuccessResponse("Successfully created new template"));
     }
 }

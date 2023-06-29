@@ -21,7 +21,7 @@ public class JsonToTemplateMapConverter implements Converter<Json, Map<String, T
     private final ObjectMapper objectMapper;
 
     @Override
-    public Map<String,TemplateProperty> convert(Json source) {
+    public Map<String, TemplateProperty> convert(Json source) {
         try {
             return objectMapper.readValue(source.asString(), new TypeReference<>() {
             });

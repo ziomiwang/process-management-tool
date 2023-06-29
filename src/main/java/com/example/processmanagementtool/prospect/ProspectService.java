@@ -1,5 +1,6 @@
 package com.example.processmanagementtool.prospect;
 
+import com.example.processmanagementtool.commons.ResponseHelper;
 import com.example.processmanagementtool.domain.prospect.Prospect;
 import com.example.processmanagementtool.domain.prospect.repository.ProspectRepository;
 import com.example.processmanagementtool.domain.template.Template;
@@ -7,7 +8,6 @@ import com.example.processmanagementtool.domain.template.repository.TemplateRepo
 import com.example.processmanagementtool.domain.user.User;
 import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.ProspectPageDTO;
-import com.example.processmanagementtool.dto.ProspectPropertyDTO;
 import com.example.processmanagementtool.dto.ProspectRequestDTO;
 import com.example.processmanagementtool.dto.SuccessResponseDTO;
 import com.example.processmanagementtool.exception.customexceptions.BadRequest;
@@ -42,9 +42,8 @@ public class ProspectService {
 
     public Mono<ProspectPageDTO> findAllProspectsByUser(Principal principal, PageRequest pageRequest) {
         return userRepository.findUserByLogin(principal.getName())
-                .flatMap(foundUser -> getMapAndZipProspects(foundUser, pageRequest))
-                .map(res -> new PageImpl<>(res.getT1(), pageRequest, res.getT2()))
-                .flatMap(this::mapProspectPageToProspectPageDTO);
+                .flatMap(foundUser -> getAndZipProspects(foundUser, pageRequest))
+                .flatMap(tuple2 -> mapProspectPageToProspectPageDTO(new PageImpl<>(tuple2.getT1(), pageRequest, tuple2.getT2())));
     }
 
     private Mono<ProspectPageDTO> mapProspectPageToProspectPageDTO(Page<Prospect> page) {
@@ -53,13 +52,13 @@ public class ProspectService {
                 .totalElements(page.getTotalElements())
                 .pageElements(page.getNumberOfElements())
                 .content(ProspectDTOMapper.mapProspectToResponse(page.getContent()))
-                .responseType("template")
+                .responseType("prospect")
                 .build());
     }
 
-    private Mono<Tuple2<List<Prospect>, Long>> getMapAndZipProspects(User user, PageRequest pageRequest) {
+    private Mono<Tuple2<List<Prospect>, Long>> getAndZipProspects(User user, PageRequest pageRequest) {
         return prospectRepository.findAllByUserId(user.getId(), pageRequest).collectList()
-                .zipWith(templateRepository.findAllByUserId(user.getId()).count());
+                .zipWith(prospectRepository.countByUserId(user.getId()));
     }
 
     private Mono<ProspectRequestDTO> findTemplateAndValidateData(Mono<ProspectRequestDTO> request, Long userId) {
@@ -72,7 +71,7 @@ public class ProspectService {
         List<String> wrongKeys = template.getFields().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().getRequired())
-                .filter(property -> checkIfPropertyIsNull(property.getKey(), request.getFields()))
+                .filter(property -> Objects.isNull(request.getFields().get(property.getKey()).getData()))
                 .map(Map.Entry::getKey)
                 .toList();
 
@@ -82,17 +81,10 @@ public class ProspectService {
         return Mono.just(request);
     }
 
-    private boolean checkIfPropertyIsNull(String key, Map<String, ProspectPropertyDTO> requestFields) {
-        ProspectPropertyDTO value = requestFields.get(key);
-        return Objects.isNull(value.getData());
-    }
-
     private Mono<SuccessResponseDTO> mapValidatedRequestToProspectAndSave(ProspectRequestDTO prospectRequestDTO, Long userId) {
         Prospect prospect = ProspectDTOMapper.mapDTOtoProspect(prospectRequestDTO);
         prospect.setUserId(userId);
         return prospectRepository.save(prospect)
-                .flatMap(res -> Mono.just(SuccessResponseDTO.builder()
-                        .message("Successfully created new prospect")
-                        .build()));
+                .flatMap(res -> ResponseHelper.buildSuccessResponse("Successfully created new prospect"));
     }
 }

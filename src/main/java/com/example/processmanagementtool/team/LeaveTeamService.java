@@ -1,5 +1,6 @@
 package com.example.processmanagementtool.team;
 
+import com.example.processmanagementtool.commons.ResponseHelper;
 import com.example.processmanagementtool.domain.team.repository.TeamRepository;
 import com.example.processmanagementtool.domain.user.TeamMembershipType;
 import com.example.processmanagementtool.domain.user.User;
@@ -35,15 +36,10 @@ public class LeaveTeamService {
         }
         if (user.getMembershipType().equals(TeamMembershipType.OWNER)) {
             return detachMembersFromOwnerTeamAndDeleteTeam(user.getTeamId())
-                    .flatMap(res -> Mono.just(SuccessResponseDTO.builder()
-                            .message("Team successfully disbanded")
-                            .data(UserDTOMapper.mapUserToSimpleUser(res))
-                            .build()));
+                    .flatMap(res -> ResponseHelper.buildSuccessResponse("Team successfully disbanded", UserDTOMapper.mapUserToSimpleUser(res)));
         }
         return setUserTeamInfoToNull(user)
-                .flatMap(ignore -> Mono.just(SuccessResponseDTO.builder()
-                        .message("User successfully left current team")
-                        .build()));
+                .flatMap(ignore -> ResponseHelper.buildSuccessResponse("User successfully left current team"));
     }
 
     private Mono<List<User>> detachMembersFromOwnerTeamAndDeleteTeam(final Long teamId) {

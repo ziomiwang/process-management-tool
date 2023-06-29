@@ -12,7 +12,7 @@ public class AuthenticationUserService {
 
     private final UserRepository userRepository;
 
-    public Mono<CustomUserDetails> loadUserByLogin(String login){
+    public Mono<CustomUserDetails> loadUserByLogin(String login) {
         return userRepository.findUserByLogin(login)
                 .map(CustomUserDetails::new);
     }

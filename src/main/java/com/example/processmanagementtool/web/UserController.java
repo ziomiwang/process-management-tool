@@ -25,7 +25,7 @@ public class UserController implements UserApi {
         return userService.deleteUser(id)
 //                .map(ResponseEntity::ok);
                 .map(user -> {
-                    if (user == null){
+                    if (user == null) {
                         throw new UserNotFoundException("User not found");
                     }
                     return new ResponseEntity<>(user, HttpStatus.OK);
