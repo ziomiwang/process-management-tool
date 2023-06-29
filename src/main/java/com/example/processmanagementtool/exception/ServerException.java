@@ -1,5 +1,6 @@
 package com.example.processmanagementtool.exception;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @ToString
-public abstract class ServerException extends RuntimeException{
+@EqualsAndHashCode(callSuper = false)
+public abstract class ServerException extends RuntimeException {
 
     private String message;
     private ErrorCode errorCode;

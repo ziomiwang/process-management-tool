@@ -12,8 +12,12 @@ import java.util.Set;
 public interface UserRepository extends ReactiveCrudRepository<User, Long> {
 
     Mono<User> findUserByLogin(String login);
+
     Mono<Void> deleteUserByLogin(String login);
+
     Flux<User> findAllByLoginIn(Set<String> login);
+
     Flux<User> findAllByTeamId(Long teamId);
+
     Mono<Boolean> existsUserByLogin(String login);
 }

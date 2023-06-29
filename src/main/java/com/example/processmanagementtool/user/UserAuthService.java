@@ -7,7 +7,6 @@ import com.example.processmanagementtool.domain.user.repository.UserRepository;
 import com.example.processmanagementtool.dto.AuthRequest;
 import com.example.processmanagementtool.dto.AuthResponse;
 import com.example.processmanagementtool.dto.UserRequestDTO;
-import com.example.processmanagementtool.exception.customexceptions.BadRequest;
 import com.example.processmanagementtool.exception.customexceptions.InvalidCredentialsException;
 import com.example.processmanagementtool.exception.customexceptions.LoginAlreadyTakenException;
 import com.example.processmanagementtool.security.model.CustomUserDetails;

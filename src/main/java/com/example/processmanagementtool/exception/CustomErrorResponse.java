@@ -18,7 +18,7 @@ public class CustomErrorResponse {
     private String message;
     private String errorCode;
 
-    public static CustomErrorResponse map(ServerException ex){
+    public static CustomErrorResponse map(ServerException ex) {
         return CustomErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
                 .message(ex.getMessage())
